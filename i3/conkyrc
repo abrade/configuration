@@ -1,0 +1,47 @@
+background        no
+out_to_console 	  yes
+out_to_x	  no
+update_interval	  1
+total_run_times	  0
+short_units	  yes
+pad_percents	  3
+
+override_utf8_locale yes
+
+# had to add
+# mpd: ALL
+# to /etc/hosts.allow
+mpd_host localhost
+mpd_port 6600
+
+TEXT
+,[
+  {"full_text": "/", "color":"\#AB6B74"},
+  {"full_text": "${fs_free /}", "color":"\#687987"},
+  {"full_text": "${diskio /dev/sda1}    ", "color":"\#424548"},
+  {"full_text": "H", "color":"\#AB6B74"},
+
+
+#  {"full_text": "|", "color":"\#000000"},
+  ${if_match "$gw_iface"=="(null)"}\
+   Network Unavailable " , "color" : "\#FF173E" },\
+  ${endif}\
+  ${if_match "$gw_iface"=="wlan0"}\
+   ⇋ wlan0 on ${addr wlan0} DL: ${downspeed wlan0} UL: ${upspeed wlan0} " , "color" : "\#4C7899" },\
+  ${endif}\
+  ${if_match "$gw_iface"=="wwan0"}\
+   ⇋ wwan0 on ${addr wwan0} DL: ${downspeed wwan0} UL: ${upspeed wwan0} " , "color" : "\#4C7899" },\
+  ${endif}\
+  ${if_match "$gw_iface"=="eth0"}\
+   ⇋ eth0 on ${addr eth0} DL: ${downspeed eth0} UL: ${upspeed eth0} " , "color" : "\#4C7899" },\
+  ${endif}\
+
+  {"full_text": "    ❤${hwmon temp 1}°C ${loadavg 1} [$cpubar] ","color": "\#B94557"},
+  {"full_text": "≣ $memeasyfree ", "color":"\#B28D4C"},
+  {"full_text": "$if_mpd_playing ♪  $mpd_artist - $mpd_title $endif", "color":"\#1B4D97"},
+  {"full_text": "♪ $mixer%", "color":"\#AB6B74"},
+  {"full_text": "| ${time %a %d %b} ${time %H:%M} ", "color":"\#FFFFFF"}
+]
+ 
+#  {"full_text": " ≈ ${wireless_essid wlan0} [${wireless_link_qual_perc wlan0}%] ","color":"\#33CC99"},
+#  {"full_text": " ☇ [$battery_percent%] ","color":"\#9933CC"},
