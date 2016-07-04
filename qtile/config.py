@@ -2,12 +2,13 @@
 # -*- coding: utf-8 -*-
 
 from libqtile import bar, hook, layout, widget
-from libqtile.command import lazy, Client
-from libqtile.config import Drag, Click, Group, Key, Match, Screen
+from libqtile.command import lazy
+from libqtile.config import Drag, Group, Key, Match, Screen
 
 import weather as _weather
 import thunderbird as _thunderbird
 import khalwidget as _khalwidget
+import custom_commands as _commands
 
 import subprocess, re
 import os
@@ -148,40 +149,16 @@ class Widget(object):
     )
 
 
-# Commands to spawn
-class Commands(object):
-    i3_exit_cmd = os.path.expanduser('~/bin/i3exit')
-    browser = 'vivaldi'
-    dmenu = 'dmenu_run -i -b -p ">>>" -nb "#15181a" -nf "#fff" -sb "#333" -sf "#fff"'
-    file_manager = 'thunar'
-    lock_screen = os.path.expanduser('~/bin/i3_lock')
-    suspend = i3_exit_cmd + " suspend"
-    poweroff = i3_exit_cmd + " shutdown"
-    reboot = i3_exit_cmd + " reboot"
-    screenshot = 'shutter -f'
-    terminal = 'xfce4-terminal'
-    trackpad_toggle = "synclient TouchpadOff=$(synclient -l | grep -c 'TouchpadOff.*=.*0')"
-    volume_up = 'amixer -q -c 1 sset Master 5dB+'
-    volume_down = 'amixer -q -c 1 sset Master 5dB-'
-    volume_toggle = 'amixer -q -D pulse sset Master 1+ toggle'
-    spotify_ctrl = {
-        'play': 'dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Play',
-        'pause': 'dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Pause',
-        'next': 'dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next',
-        'prev': 'dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous',
-    }
-
-
 # Keybindings
 mod = 'mod4'
 keys = [
     # Window Manager Controls
     Key([mod, 'control'], 'r', lazy.restart()),
     Key([mod, 'control'], 'q', lazy.shutdown()),
-    Key([mod, 'control'], 'l', lazy.spawn(Commands.lock_screen)),
-    Key([mod, 'control'], 'k', lazy.spawn(Commands.suspend)),
-    Key([mod, 'control'], 'j', lazy.spawn(Commands.poweroff)),
-    Key([mod, 'control'], 'h', lazy.spawn(Commands.reboot)),
+    Key([mod, 'control'], 'l', lazy.spawn(_commands.lock_screen)),
+    Key([mod, 'control'], 'k', lazy.spawn(_commands.suspend)),
+    Key([mod, 'control'], 'j', lazy.spawn(_commands.poweroff)),
+    Key([mod, 'control'], 'h', lazy.spawn(_commands.reboot)),
 
     # Window Controls
     Key([mod], 'w', lazy.window.kill()),
@@ -223,24 +200,24 @@ keys = [
     Key([mod], 'l', lazy.to_screen(1)),  # right
 
     # Commands: Application Launchers
-    Key([mod], 'space', lazy.spawn(Commands.dmenu)),
-    Key([mod], 'n', lazy.spawn(Commands.browser)),
-    Key([mod], 'e', lazy.spawn(Commands.file_manager)),
-    Key([mod], 'Return', lazy.spawn(Commands.terminal)),
+    Key([mod], 'space', lazy.spawn(_commands.dmenu)),
+    Key([mod], 'n', lazy.spawn(_commands.browser)),
+    Key([mod], 'e', lazy.spawn(_commands.file_manager)),
+    Key([mod], 'Return', lazy.spawn(_commands.terminal)),
 
     # Commands: Volume Controls
-    Key([], 'XF86AudioRaiseVolume', lazy.spawn(Commands.volume_up)),
-    Key([], 'XF86AudioLowerVolume', lazy.spawn(Commands.volume_down)),
-    Key([], 'XF86AudioMute', lazy.spawn(Commands.volume_toggle)),
-    Key([mod, 'shift'], 'Left', lazy.spawn(Commands.spotify_ctrl['prev'])),
-    Key([mod, 'shift'], 'Right', lazy.spawn(Commands.spotify_ctrl['next'])),
-    Key([mod, 'shift'], 'Up', lazy.spawn(Commands.spotify_ctrl['pause'])),
-    Key([mod, 'shift'], 'Down', lazy.spawn(Commands.spotify_ctrl['play'])),
+    Key([], 'XF86AudioRaiseVolume', lazy.spawn(_commands.volume_up)),
+    Key([], 'XF86AudioLowerVolume', lazy.spawn(_commands.volume_down)),
+    Key([], 'XF86AudioMute', lazy.spawn(_commands.volume_toggle)),
+    Key([mod, 'shift'], 'Left', lazy.spawn(_commands.spotify['prev'])),
+    Key([mod, 'shift'], 'Right', lazy.spawn(_commands.spotify['next'])),
+    Key([mod, 'shift'], 'Up', lazy.spawn(_commands.spotify['pause'])),
+    Key([mod, 'shift'], 'Down', lazy.spawn(_commands.spotify['play'])),
 
-    Key([], 'XF86TouchpadToggle', lazy.spawn(Commands.trackpad_toggle)),
+    Key([], 'XF86TouchpadToggle', lazy.spawn(_commands.trackpad_toggle)),
 
     # TODO: What does the PrtSc button map to?
-    Key([mod], 'p', lazy.spawn(Commands.screenshot)),
+    Key([mod], 'p', lazy.spawn(_commands.screenshot)),
 ]
 
 

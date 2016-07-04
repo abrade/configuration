@@ -77,7 +77,7 @@ class CustomKhalWidget(_widget.base.ThreadedPollText):
                            '/' + str(tomorrow.year)
                 caldate = output[i]
                 continue
-            if endtime > now:
+            if endtime > now and "Abgesagt" not in output[i]:
                 data = caldate.replace(':', '') + ' ' + output[i]
                 break
             else:

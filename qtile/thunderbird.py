@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-import requests as _requests
-import libqtile as _qtile
 import libqtile.widget as _widget
 from functools import partial
 
@@ -18,14 +16,14 @@ class ThunderbirdWidget(_widget.TextBox):
 
     orientations = _widget.base.ORIENTATION_HORIZONTAL
     defaults=[]
-    _unread = set()
+    _unread = dict()
 
     def __init__(self, **config):
         _widget.TextBox.__init__(self, **config)
         self.add_defaults(ThunderbirdWidget.defaults)
         self._update_text()
 
-        dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
+        DBusGMainLoop(set_as_default=True)
         bus = dbus.SessionBus()
         bus.add_signal_receiver(self.new_msg,
                                 dbus_interface="org.mozilla.thunderbird.DBus",
@@ -45,7 +43,11 @@ class ThunderbirdWidget(_widget.TextBox):
             self.foreground = "ff0000"
         else:
             self.foreground = "ffffff"
-        self.text = "%s " % len(self._unread)
+
+        if unread_length == 1:
+            unread_length = list(self._unread.values())[0]
+
+        self.text = "%s " % (unread_length)
 
     def update(self):
         self._update_text()
@@ -53,12 +55,12 @@ class ThunderbirdWidget(_widget.TextBox):
 
     def new_msg(self, id, author, subject):
         if id not in self._unread:
-            self._unread.add(id)
+            self._unread[id] = author
         self.update()
 
     def changed_msg(self, id, event):
         if event == "read" and id in self._unread:
-            self._unread.remove(id)
+            del(self._unread[id])
         self.update()
 
     @property
