@@ -1,7 +1,7 @@
 import os as _os
 
 i3_exit_cmd = _os.path.expanduser('~/bin/i3exit')
-browser = 'vivaldi'
+browser = 'firefox'
 dmenu = 'dmenu_run -i -b -p ">>>" -nb "#15181a" -nf "#fff" -sb "#333" -sf "#fff"'
 file_manager = 'thunar'
 lock_screen = _os.path.expanduser('~/bin/i3_lock')
@@ -20,3 +20,4 @@ spotify = {
     'next': 'dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next',
     'prev': 'dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous',
 }
+
