@@ -32,7 +32,7 @@ def startup():
 
 # Theme defaults
 bar_defaults = dict(
-    size=28,
+    size=20,
     background=['#222222', '#111111'],
 )
 
@@ -85,17 +85,24 @@ class Widget(object):
 
     keyboard_layout = dict(
         configured_keyboards=['us', 'de'],
-        font='Source Code Pro',
-        fontsize=14,
+        font='Terminus',
+        fontsize=11,
         padding=5,
         background=bar_defaults['background'],
         foreground=['#ffffff', '#ffffff', '#999999'],
         fontshadow='#000000',
     )
 
+    window_name = dict(
+        fontsize=11,
+        font='Terminus',
+    )
+
     groupbox = dict(
         active=widget_defaults['foreground'],
         inactive=['#444444', '#333333'],
+        fontsize=13,
+        font='Source Code Pro',
 
         this_screen_border=layout_defaults['border_focus'],
         this_current_screen_border=layout_defaults['border_focus'],
@@ -107,8 +114,8 @@ class Widget(object):
         highlight_method='block',
         rounded=True,
 
-        # margin=-1,
-        padding=3,
+        margin=1,
+        padding=2,
         borderwidth=2,
         disable_drag=True,
         invert_mouse_wheel=True,
@@ -121,7 +128,7 @@ class Widget(object):
     )
 
     systray = dict(
-        icon_size=16,
+        icon_size=12,
         padding=5,
     )
 
@@ -145,9 +152,10 @@ class Widget(object):
         update_interval=60,
         metric=True,
         colorize=True,
+        fontsize=12,
+        font='Source Code Pro'
         # format='{condition_text} {condition_temp}°',
     )
-
 
 # Keybindings
 mod = 'mod4'
@@ -285,10 +293,10 @@ screens = [
     Screen(
         top=bar.Bar(widgets=[
             widget.GroupBox(**Widget.groupbox),
-            widget.WindowName(),
-            widget.CurrentLayout(),
+            widget.WindowName(**Widget.window_name),
+            widget.CurrentLayout(**Widget.window_name),
             widget.Sep(**Widget.sep),
-            widget.Clock(format='%a %d %b %H:%M:%S'),
+            widget.Clock(format='%a %d %b %H:%M:%S', **Widget.window_name),
         ], **bar_defaults),
         bottom=bar.Bar(widgets=[
             widget.Notify(**Widget.notify_layout),
@@ -301,7 +309,7 @@ screens = [
         # bottom=bar.Bar(widgets=[Powerline()], **bar_defaults),
         top=bar.Bar(widgets=[
             widget.GroupBox(**Widget.groupbox),
-            widget.WindowName(),
+            widget.WindowName(**Widget.window_name),
 
             widget.CPUGraph(graph_color='#18BAEB', fill_color='#1667EB.3', **Widget.graph),
             widget.MemoryGraph(graph_color='#00FE81', fill_color='#00B25B.3', **Widget.graph),
@@ -309,24 +317,24 @@ screens = [
             widget.HDDBusyGraph(device='sda', **Widget.graph),
             widget.DF(),
 
-            widget.ThermalSensor(metric=True, threshold=158),
+            widget.ThermalSensor(metric=True, threshold=158, **Widget.window_name),
             widget.Sep(**Widget.sep),
 
-            widget.CurrentLayout(),
+            widget.CurrentLayout(**Widget.window_name),
             widget.Sep(**Widget.sep),
             widget.KeyboardLayout(**Widget.keyboard_layout),
             widget.Sep(**Widget.sep),
             widget.Systray(**Widget.systray),
 #            widget.BatteryIcon(**Widget.battery),
             # widget.Battery(**Widget.battery_text),
-            widget.Volume(cardid=1),
+            widget.Volume(cardid=1, **Widget.window_name),
             # widget.YahooWeather(**Widget.weather),
             widget.Sep(**Widget.sep),
             _weather.WeatherComWidget(**Widget.weather),
             widget.Sep(**Widget.sep),
             _thunderbird.ThunderbirdWidget(**Widget.weather),
             widget.Sep(**Widget.sep),
-            widget.Clock(format='%a %d %b %H:%M:%S'),
+            widget.Clock(format='%a %d %b %H:%M:%S', **Widget.window_name),
             ], **bar_defaults),
         # bottom=bar.Bar(widgets=[
         #     widget.Notify(**Widget.notify_layout),
@@ -334,17 +342,18 @@ screens = [
     )
 ]
 
+monadtall = layout.MonadTall(**layout_defaults)
 
 # Layouts
 layouts = (
     layout.Tile(ratio=0.5, **layout_defaults),
     layout.Max(**layout_defaults),
     layout.RatioTile(**layout_defaults),
-    layout.Matrix(**layout_defaults),
-    layout.MonadTall(**layout_defaults),
-    layout.Stack(stacks=4,**layout_defaults),
-    layout.Zoomy(**layout_defaults),
-    layout.TreeTab(sections=['Work', 'Messaging', 'Docs', 'Util', 'Other']),
+    monadtall,
+    # layout.Matrix(**layout_defaults),
+    # layout.Stack(stacks=4,**layout_defaults),
+    # layout.Zoomy(**layout_defaults),
+    # layout.TreeTab(sections=['Work', 'Messaging', 'Docs', 'Util', 'Other']),
     # layout.Slice('right', 256, name='pidgin', role='buddy_list',
     #              fallback=layout.Stack(stacks=2, border_width=1)),
 )
@@ -376,7 +385,7 @@ floating_layout = layout.floating.Floating(
 
 
 def main(qtile):
-    pass
+    monadtall._min_ratio = 0.15
 
 
 def get_group_index(group_name):
