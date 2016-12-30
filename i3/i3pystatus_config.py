@@ -6,6 +6,7 @@ import json
 import collections
 
 from i3pystatus import Status
+from i3pystatus.weather import weathercom
 
 
 class MySettings(collections.MutableMapping):
@@ -182,7 +183,9 @@ status.register("alsa",
 # Shows weather
 if my_settings.get('weather'):
     status.register("weather",
-                    **my_settings.get('weather')
+                    backend=weathercom.Weathercom(
+                        **my_settings.get('weather')
+                        )
                     )
 
 # Shows mpd status

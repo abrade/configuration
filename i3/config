@@ -16,7 +16,7 @@ set $psst --no-startup-id
 # is used in the bar {} block below.
 # This font is widely installed, provides lots of unicode glyphs, right-to-left
 # text rendering and scalability on retina/hidpi displays (thanks to pango).
-font pango:Source Code Pro Semibold 9
+font pango:Hack normal 8
 # Before i3 v4.8, we used to recommend this one as the default:
 # font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
 # The font above is very space-efficient, that is, it looks good, sharp and
@@ -35,7 +35,7 @@ bindsym $mod+Return exec xfce4-terminal
 bindsym $mod+Shift+c kill
 
 # start dmenu (a program launcher)
-bindsym $mod+d exec dmenu_run
+bindsym $mod+space exec dmenu_run
 # There also is the (new) i3-dmenu-desktop which only displays applications
 # shipping a .desktop file. It is a wrapper around dmenu, so you need that
 # installed.
@@ -104,7 +104,8 @@ bindsym $mod+e layout toggle split
 bindsym $mod+Shift+space floating toggle
 
 # change focus between tiling / floating windows
-bindsym $mod+space focus mode_toggle
+bindsym $mod+d focus mode_toggle
+bindsym $mod+Tab focus right
 
 # focus the parent container
 bindsym $mod+a focus parent
@@ -157,8 +158,10 @@ mode "$mode_system" {
     bindsym Return mode "default"
     bindsym Escape mode "default"
 }
-bindsym $mod+Pause mode "$mode_system"
+bindsym $mod+Ctrl+p mode "$mode_system"
 
+# move current workspace to output left
+bindsym $mod+m move workspace to output left
 # reload the configuration file
 bindsym $mod+Shift+r reload
 # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
@@ -211,9 +214,16 @@ bindsym $mod+r mode "resize"
 # }
 
 bar {
+    output DVI-D-0
     position top
 #    workspace_buttons yes
     status_command python3 ~/.i3/i3pystatus_config.py
+}
+
+bar {
+    output VGA-0
+    position top
+    status_command python3 ~/.i3/i3pystatus_vga.py
 }
 
 for_window [class="Xfce4-notifyd"] floating enable; border none; focus mode_toggle

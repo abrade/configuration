@@ -10,25 +10,31 @@ import thunderbird as _thunderbird
 import khalwidget as _khalwidget
 import custom_commands as _commands
 
-import subprocess, re
-import os
+import subprocess as _subprocess
+import re as _re
+import os as _os
+
+
 DETACHED_PROCESS = 0x00000008
 
+_DEFAULT_FONT = "Hack"
+
+
 def is_running(process):
-    s = subprocess.Popen(["ps", "axw"], stdout=subprocess.PIPE)
+    s = _subprocess.Popen(["ps", "axw"], stdout=_subprocess.PIPE)
     for x in s.stdout:
-        if re.search(process, x):
+        if _re.search(process, x):
             return True
         return False
 
 def execute_once(process):
     if not is_running(process):
-        return subprocess.call(process.split())
+        return _subprocess.call(process.split())
 
 @hook.subscribe.startup_once
 def startup():
-    home = os.path.expanduser('~/bin/start_apps')
-    subprocess.call([home])
+    home = _os.path.expanduser('~/bin/start_apps')
+    _subprocess.call([home])
 
 # Theme defaults
 bar_defaults = dict(
@@ -65,11 +71,11 @@ class Widget(object):
 
     graph = dict(
         background='#000000',
-        border_width=0,
-        border_color='#000000',
+        border_width=1,
+#        border_color='#000000',
         line_width=1,
         margin_x=0,
-        margin_y=0,
+#        margin_y=0,
         width=50,
     )
 
@@ -85,7 +91,7 @@ class Widget(object):
 
     keyboard_layout = dict(
         configured_keyboards=['us', 'de'],
-        font='Terminus',
+        font=_DEFAULT_FONT,
         fontsize=11,
         padding=5,
         background=bar_defaults['background'],
@@ -95,7 +101,7 @@ class Widget(object):
 
     window_name = dict(
         fontsize=11,
-        font='Terminus',
+        font=_DEFAULT_FONT,
     )
 
     groupbox = dict(
@@ -133,9 +139,9 @@ class Widget(object):
     )
 
     battery = dict(
-       energy_now_file='charge_now',
-       energy_full_file='charge_full',
-       power_now_file='current_now',
+        energy_now_file='charge_now',
+        energy_full_file='charge_full',
+        power_now_file='current_now',
     )
 
     battery_text = battery.copy()
@@ -147,7 +153,7 @@ class Widget(object):
 
     weather = dict(
         # woeid=642302,
-#        location="Buehlertal, Germany",
+        # location="Buehlertal, Germany",
         location_code='GMXX2902:1:GM',
         update_interval=60,
         metric=True,
@@ -236,12 +242,12 @@ group_setup = (
         'matches': [Match(wm_class=('Firefox', 'Google-chrome', "google-chrome", "google-chrome", "vivaldi-stable",))],
     }),
     ('', {  # fa-code
-        'layout': 'max',
-        'matches': [Match(wm_class=('Emacs', 'emacs',))],
+        'layout': 'monadtall',
+        # 'matches': [Match(wm_class=('Emacs', 'emacs',))],
     }),
     ('', { # fa-terminal
         'layout': 'monadtall',
-        'matches': [Match(wm_class=('xfce4-terminal', 'Xfce4-terminal', 'tmux',))],
+        # 'matches': [Match(wm_class=('xfce4-terminal', 'Xfce4-terminal', 'tmux',))],
     }),
     ('', {'layout': 'monadtall'}),
     ('', {  # fa-book
@@ -311,9 +317,22 @@ screens = [
             widget.GroupBox(**Widget.groupbox),
             widget.WindowName(**Widget.window_name),
 
-            widget.CPUGraph(graph_color='#18BAEB', fill_color='#1667EB.3', **Widget.graph),
-            widget.MemoryGraph(graph_color='#00FE81', fill_color='#00B25B.3', **Widget.graph),
-            widget.NetGraph(graph_color='#ffff00', fill_color='#4d4d00', interface='eth0', **Widget.graph),
+            widget.CPUGraph(
+                graph_color='#18BAEB',
+                fill_color='#1667EB.3',
+                **Widget.graph
+            ),
+            widget.MemoryGraph(
+                graph_color='#00FE81',
+                fill_color='#00B25B.3',
+                **Widget.graph
+            ),
+            widget.NetGraph(
+                graph_color='#ffff00',
+                fill_color='#4d4d00',
+                interface='eth0',
+                **Widget.graph
+            ),
             widget.HDDBusyGraph(device='sda', **Widget.graph),
             widget.DF(),
 

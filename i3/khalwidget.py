@@ -1,24 +1,23 @@
-# -*- coding: utf-8 -*-
-import libqtile as _qtile
-import libqtile.widget as _widget
-
-from libqtile import utils
-
+import i3pystatus as _i3pystatus
+import psutil
 import datetime
 import dateutil.parser
 import subprocess
 import string
 
 
-class CustomKhalWidget(_widget.base.ThreadedPollText):
+class Mem(_i3pystatus.IntervalModule):
     """Khal calendar widget
 
     This widget will display the next appointment on your Khal calendar in the
     qtile status bar. Appointments within the "reminder" time will be
     highlighted.
     """
-    orientations = _widget.base.ORIENTATION_HORIZONTAL
-    defaults = [
+    reminder_color = '#FF0000'
+    foreground = '#FFFF33'
+    remindertime = 10
+    lookahead = 7
+    settings = (
         (
             'reminder_color',
             'FF0000',
@@ -27,15 +26,9 @@ class CustomKhalWidget(_widget.base.ThreadedPollText):
         ('foreground', 'FFFF33', 'default foreground color'),
         ('remindertime', 10, 'reminder time in minutes'),
         ('lookahead', 7, 'days to look ahead in the calendar'),
-    ]
+    )
 
-    def __init__(self, **config):
-        _widget.base.ThreadedPollText.__init__(self, **config)
-        self.add_defaults(CustomKhalWidget.defaults)
-        self.text = 'Calendar not initialized.'
-        self.default_foreground = self.foreground
-
-    def poll(self):
+    def run(self):
         # get today and tomorrow
         now = datetime.datetime.now()
         tomorrow = now + datetime.timedelta(days=1)
@@ -87,8 +80,12 @@ class CustomKhalWidget(_widget.base.ThreadedPollText):
 
         # colorize the event if it is within reminder time
         if ((starttime - remtime) <= now) and (endtime > now):
-            self.foreground = utils.hex(self.reminder_color)
+            self.foreground = self.reminder_color
         else:
             self.foreground = self.default_foreground
 
-        return data
+        self.data = data
+        self.output = {
+            'full_text': data,
+            'color': self.foreground
+        }
