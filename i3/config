@@ -35,7 +35,8 @@ bindsym $mod+Return exec xfce4-terminal
 bindsym $mod+Shift+c kill
 
 # start dmenu (a program launcher)
-bindsym $mod+space exec dmenu_run
+#bindsym $mod+space exec dmenu_run
+bindsym $mod+space exec dmenu_run -i -b -p ">>>" -nb "#15181a" -nf "#fff" -sb "#333" -sf "#fff"
 # There also is the (new) i3-dmenu-desktop which only displays applications
 # shipping a .desktop file. It is a wrapper around dmenu, so you need that
 # installed.

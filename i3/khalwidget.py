@@ -6,7 +6,7 @@ import subprocess
 import string
 
 
-class Mem(_i3pystatus.IntervalModule):
+class CustomKhalWidget(_i3pystatus.IntervalModule):
     """Khal calendar widget
 
     This widget will display the next appointment on your Khal calendar in the
@@ -40,8 +40,7 @@ class Mem(_i3pystatus.IntervalModule):
         # and get the next event
         args = ['khal', 'agenda', '--days', str(self.lookahead)]
         cal = subprocess.Popen(args, stdout=subprocess.PIPE)
-        output = cal.communicate()[0]
-        output = output.decode()
+        output = cal.communicate()[0].decode()
         output = output.split('\n')
         caldate = output[0]
         try:
@@ -76,7 +75,8 @@ class Mem(_i3pystatus.IntervalModule):
                     str(self.lookahead) + ' days'
 
         # get rid of any garbage in appointment added by khal
-        data = ''.join(filter(lambda x: x in string.printable, data))
+        data = [x for x in data if x in string.printable]
+        data = ''.join(data)
 
         # colorize the event if it is within reminder time
         if ((starttime - remtime) <= now) and (endtime > now):
